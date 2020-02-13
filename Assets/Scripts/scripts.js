@@ -19,6 +19,18 @@ function formatDate(date) {
     let dateArray = date.split('-')
     return `${parseInt(dateArray[1])}/${parseInt(dateArray[2])}/${dateArray[0]}`
 }
+function getUVColor(uv) {
+    //red organge yellow green
+    if(uv <= 2) {
+        return 'green'
+    } else if(uv <= 5) {
+        return 'yellow'
+    } else if (uv <= 7) {
+        return 'orange'
+    } else {
+        return 'red'
+    }
+}
 function getCityData(city) {
     let url = `https://api.weatherapi.com/v1/forecast.json?key=ff4f207a8ae5485cb4320106200402&q=${city}&days=6`
     fetch(url)
@@ -33,7 +45,8 @@ function getCityData(city) {
                 }
                 let forecast = cityData.forecast.forecastday
                 document.getElementById('temp').innerHTML = `Temperature: ${cityData.current.temp_f}&#176F`
-                document.getElementById('uv-index').innerHTML = `UV Index: ${cityData.current.uv}`
+                document.getElementById('uv-index').innerHTML = `UV Index: <span class="${getUVColor(parseFloat(cityData.current.uv))}">${cityData.current.uv}</span>`
+
                 document.getElementById('humidity').innerText = `Humidity: ${cityData.current.humidity}%`
                 document.getElementById('wind-speed').innerText = `Wind Speed: ${cityData.current.wind_mph} MPH`
                 document.getElementById('city-name').innerHTML = `${cityData.location.name}(${formatDate(forecast[0].date)})<img src="${`https:${cityData.current.condition.icon}`}" alt="cityData.current.condition.text">`
