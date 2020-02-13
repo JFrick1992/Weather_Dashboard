@@ -16,19 +16,20 @@ function addButton(city) {
     document.getElementById('button-row').append(div)
 }
 function getCityData(city) {
-    let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=0ad7c955ef09cff110010cc7dc458217`
-
+    let url = `https://api.weatherapi.com/v1/forecast.json?key=ff4f207a8ae5485cb4320106200402&q=${city}&days=6`
     fetch(url)
         .then(r => r.json())
         .then(cityData => {
-            if (cityData.cod == '404') {
-                console.log(cityData.cod)
-            } else if (cityData.cod == '200') {
-                console.log(cityData.cod)
-                if(!citysFound.includes(cityData.name)) {
-                    addButton(cityData.name)
-                    citysFound.push(cityData.name)
+            if(typeof cityData.error !== 'undefined' ) {
+                console.log(cityData.error)
+            } else {
+                if(!citysFound.includes(cityData.location.name)) {
+                    addButton(cityData.location.name)
+                    citysFound.push(cityData.location.name)
                 }
+                console.log(cityData)
+                document.getElementById('no-city').classList.add('hide')
+                document.getElementById('city-data').classList.remove('hide')
             }
         })
         .catch(e => {
@@ -41,10 +42,11 @@ document.getElementById('icon_prefix2').addEventListener('keydown', (event) => {
         getSeachInfo()
     }
 })
-document.addEventListener('click', ({ target }) => {
+document.addEventListener('click', ({target}) => {
     if (target.id === 'search-icon') {
         getSeachInfo()
+    } else if(target.type === 'submit') {
+        getCityData(target.value)
     }
 })
-
 
